@@ -55,3 +55,54 @@ async def create_upload_file(file: UploadFile):
             "content_type":file.content_type,
             "file_full_path":file_full_path            
             }
+
+@app.get("/all/")
+def all():
+    connection = pymysql.connect(host="localhost",
+                                 user='mnist', 
+                                 password='1234',
+                                 port=53306,
+                                 database='mnistdb',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    with connection:                                              
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM image_processing"
+            cursor.execute(sql)
+            result = cursor.fetchall()
+    #DB 연결SELECT ALL
+    #결과값 리턴
+    return result
+
+@app.get("/one/")
+def one():
+    connection = pymysql.connect(host="localhost",
+                                 user='mnist',
+                                 password='1234',
+                                 port=53306,
+                                 database='mnistdb',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    with connection:
+        with connection.cursor() as cursor:
+            sql = "SELELCT file_name FROM image_processing"
+            cursor.execute(sql)
+            result = cursor.fetchone()
+    #DB연결 SELECT 값 중 하나만 리턴
+    # 결과값 리턴
+    return result
+
+@app.get("/many/")
+def many(size: int = -1):
+    sql = "SELECT * FROM image_processing WHERE prediction_time IS NULL ORDER BY num"
+    connection = pymysql.connect(host="localhost",
+                                 user='mnist',
+                                 password='1234',
+                                 port=53306,
+                                 database='mnistdb',
+                                 cursorclass=pymysql.cursors.DictCursor)
+    with connection:
+        with connection.cursor() as cursor:
+            sql = "SELECT * FROM image_processing"
+            cursor.execute(sql)
+            result=cursor.fetchmany(size)
+    return result
+
