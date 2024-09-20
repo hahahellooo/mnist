@@ -1,6 +1,9 @@
 from typing import Annotated
 import os 
 from fastapi import FastAPI, File, UploadFile
+from datetime import datetime
+from pytz import timezone
+import pymysql.cursors
 
 app = FastAPI()
 
@@ -12,31 +15,35 @@ async def create_file(file: Annotated[bytes, File()]):
 
 @app.post("/uploadfile/")
 async def create_upload_file(file: UploadFile):
+    
     current_time=datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
     img = await file.read()
     file_name = file.filename
-    upload_dir = "./photo"
-    file_full_path = os.path.join(upload_dir, file_name)
+    file_ext = file.content_type.split("/")[-1] #"image/png"
+    
+    upload_dir = '/home/hahahellooo/code/mnist/img'
+    if not os.path.exists(upload_dir):
+        os.makedirs(upload_dir, exist_ok=True)
+    import uuid
+    file_full_path = os.path.join(upload_dir, f'{uuid.uuid4()}.{file_ext}')
+    # "/home/hahahellooo/code/mnist/img/6d1668ec-893f-4107-95b9-8c3c364a5bc2.png"
 
-    connection = pymysql.connect(host=os.getenv("DB_IP", "localhost"),
+    with open(file_full_path, "wb") as f:
+        f.write(img)
+    
+    connection = pymysql.connect(host="localhost",
                                  user='mnist',
                                  password='1234',
-                                 port=int(os.getenv("DB_PORT","53306")),
+                                 port=53306,
                                  database='mnistdb',
                                  cursorclass=pymysql.cursors.DictCursor)
     with connection:
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `image_processing`(num, file_name, file_path, request_time, request_user) VALUES (%s, %s, %s, %s, %s)"
-            cursor.execute(sql,(num, file_name, file_full_path, current_time, 'n21'))
+            sql = "INSERT INTO `image_processing`(file_name, file_path, request_time, request_user) VALUES (%s, %s, %s, %s)"
+            cursor.execute(sql,(file_name, file_full_path, current_time, 'n21'))
             result = cursor.fetchone()
         connection.commit()
     
-    if not os.path.exists(file_full_path):
-        os.makedirs(file_full_path, exist_ok=True)
-
-    with open(file_full_path, "wb") as f:
-        f.write(img)
-
     # 파일 저장 경로 DB INSERT
     # tablename : image_processing
     # 컬럼 정보 : num (초기 인서트, 자동 증가)
