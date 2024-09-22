@@ -1,15 +1,15 @@
 import pymysql.cursors
 
-def get_conn():
-  conn = pymysql.connect(host='localhost', port = 53306,
+def get_connection():
+  connection = pymysql.connect(host='localhost', port = 53306,
                             user = 'mnist', password = '1234',
                             database = 'mnistdb',
                             cursorclass=pymysql.cursors.DictCursor)
-  return conn
+  return connection
 
 
 def dml(sql, *values):
-  conn = get_conn()
+  connection = get_connection()
 
   with conn:
     with conn.cursor() as cursor:
