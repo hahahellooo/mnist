@@ -83,7 +83,7 @@ def one():
                                  cursorclass=pymysql.cursors.DictCursor)
     with connection:
         with connection.cursor() as cursor:
-            sql = "SELELCT file_name FROM image_processing"
+            sql = "SELECT file_name FROM image_processing"
             cursor.execute(sql)
             result = cursor.fetchone()
     #DB연결 SELECT 값 중 하나만 리턴
