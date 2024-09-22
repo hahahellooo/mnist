@@ -19,6 +19,12 @@ def run():
   # STEP 2
   # RANDOM 으로 0 ~ 9 중 하나 값을 prediction_result 컬럼에 업데이트
   # 동시에 prediction_model, prediction_time 도 업데이트
+  
+    if result is None:
+        data = {"message":f"❌예측할 모델이 없습니다❌"}
+        print(data)
+        return
+
     num = result['num']
     prediction_result = random.randint(0,9)
     prediction_model = 'RandomModel'
@@ -39,7 +45,7 @@ def run():
   # LINE 으로 처리 결과 전송
     KEY = os.environ.get('LINE_TOKEN')
     url = "https://notify-api.line.me/api/notify"
-    data = {"message":f"이미지 {prediction_result}을/를 성공적으로 저장했습니다!"}
+    data = {"message":f"👌모델 {prediction_result}을/를 성공적으로 저장했습니다👌"}
    # API 호출시 사용되는 헤더 정보
     headers={"Authorization":f"Bearer {KEY}"}
     response = requests.post(url, data, headers=headers)
