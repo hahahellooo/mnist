@@ -39,9 +39,11 @@ def run():
     KEY = os.environ.get('LINE_TOKEN')
     url = "https://notify-api.line.me/api/notify"
     data = {"message":f"{prediction_result}를 성공적으로 저장했습니다!"}
+   # API 호출시 사용되는 헤더 정보
     headers={"Authorization":f"Bearer {KEY}"}
     response = requests.post(url, data, headers=headers)
-
+    
+    # 서버로부터 받은 응답 출력(성공시에는 {"status":200,"message":"ok"}와 같은 메시지 반환
     print(response.text)
     
     return True
