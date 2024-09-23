@@ -41,17 +41,23 @@ def run():
             cursor.execute(sql,(prediction_result, prediction_model, prediction_time, num))
             connection.commit()
 
-  # STEP 3
-  # LINE 으로 처리 결과 전송
+    # STEP 3
+    # LINE 으로 처리 결과 전송
+    send_noti(prediction_result)
+    
+    return True
+
+
+def send_noti(prediction_result=999):
+    # STEP 3
+    # LINE 으로 처리 결과 전송
     KEY = os.getenv("LINE_TOKEN","UuAPZM7msPnFaJt5wXTUx34JqYKO7n3AUlLq4b3eyZ4")
     url = "https://notify-api.line.me/api/notify"
     data = {"message":f"👌모델 {prediction_result}을/를 성공적으로 저장했습니다👌"}
-   # API 호출시 사용되는 헤더 정보
+    # API 호출시 사용되는 헤더 정보
     headers={"Authorization":f"Bearer {KEY}"}
     response = requests.post(url, data, headers=headers)
     
     # 서버로부터 받은 응답 출력(성공시에는 {"status":200,"message":"ok"}와 같은 메시지 반환
     print(response.text)
-    
-    return True
 
