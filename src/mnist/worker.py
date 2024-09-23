@@ -23,34 +23,40 @@ def run():
     if result is None:
         data = {"message":f"❌예측할 모델이 없습니다❌"}
         print(data)
-        return
+    else:
 
-    num = result['num']
-    prediction_result = random.randint(0,9)
-    prediction_model = 'RandomModel'
-    prediction_time = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
+        num = result['num']
+        prediction_result = random.randint(0,9)
+        prediction_model = 'RandomModel'
+        prediction_time = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
+        
+        connection = get_connection()
+        with connection:
+            with connection.cursor() as cursor:
+                sql = """UPDATE image_processing 
+                         SET prediction_result=%s, 
+                             prediction_model=%s, 
+                             prediction_time=%s
+                         WHERE num = %s"""
+                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, num))
+                connection.commit()
     
-    connection = get_connection()
-    with connection:
-        with connection.cursor() as cursor:
-            sql = """UPDATE image_processing 
-                     SET prediction_result=%s, 
-                         prediction_model=%s, 
-                         prediction_time=%s
-                     WHERE num = %s"""
-            cursor.execute(sql,(prediction_result, prediction_model, prediction_time, num))
-            connection.commit()
-
     # STEP 3
     # LINE 으로 처리 결과 전송
     KEY = os.getenv("LINE_TOKEN")
     url = "https://notify-api.line.me/api/notify"
-    data = {"message":f"👌모델 {prediction_result}을/를 성공적으로 저장했습니다👌"}
-    # API 호출시 사용되는 헤더 정보
-    headers={"Authorization":f"Bearer {KEY}"}
-    response = requests.post(url, data, headers=headers)
-    
-    # 서버로부터 받은 응답 출력(성공시에는 {"status":200,"message":"ok"}와 같은 메시지 반환
+    if result is not None:
+
+        data = {"message":f"👌모델 {prediction_result}을/를 성공적으로 저장했습니다👌"}
+        # API 호출시 사용되는 헤더 정보
+        headers={"Authorization":f"Bearer {KEY}"}
+        response = requests.post(url, data, headers=headers)
+    else:
+        data = {"message":f"저장할 데이터가 없습니다."}
+        # API 호출시 사용되는 헤더 정보
+        headers={"Authorization":f"Bearer {KEY}"}
+        response = requests.post(url, data, headers=headers)
+    #서버로부터 받은 응답 출력(성공시에는 {"status":200,"message":"ok"}와 같은 메시지 반환
     print(response.text)
     return True
 
