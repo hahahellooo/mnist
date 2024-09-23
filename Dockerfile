@@ -2,6 +2,7 @@ FROM python:3.11
 
 WORKDIR /code
 
+# cron관련 코드
 RUN apt update
 RUN apt install -y cron
 COPY ml-work-cronjob /etc/cron.d/ml-work-cronjob
