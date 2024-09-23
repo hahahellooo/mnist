@@ -4,6 +4,7 @@ from fastapi import FastAPI, File, UploadFile
 from datetime import datetime
 from pytz import timezone
 import pymysql.cursors
+from mnist.db import get_connection
 
 app = FastAPI()
 
@@ -30,13 +31,7 @@ async def create_upload_file(file: UploadFile):
 
     with open(file_full_path, "wb") as f:
         f.write(img)
-    
-    connection = pymysql.connect(host="localhost",
-                                 user='mnist',
-                                 password='1234',
-                                 port=53306,
-                                 database='mnistdb',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
             sql = "INSERT INTO `image_processing`(file_name, file_path, request_time, request_user) VALUES (%s, %s, %s, %s)"
@@ -58,12 +53,7 @@ async def create_upload_file(file: UploadFile):
 
 @app.get("/all/")
 def all():
-    connection = pymysql.connect(host="localhost",
-                                 user='mnist', 
-                                 password='1234',
-                                 port=53306,
-                                 database='mnistdb',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    connection = get_connection()
     with connection:                                              
         with connection.cursor() as cursor:
             sql = "SELECT * FROM image_processing"
@@ -75,12 +65,7 @@ def all():
 
 @app.get("/one/")
 def one():
-    connection = pymysql.connect(host="localhost",
-                                 user='mnist',
-                                 password='1234',
-                                 port=53306,
-                                 database='mnistdb',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
             sql = "SELECT file_name FROM image_processing"
@@ -93,12 +78,7 @@ def one():
 @app.get("/many/")
 def many(size: int = -1):
     sql = "SELECT * FROM image_processing WHERE prediction_time IS NULL ORDER BY num"
-    connection = pymysql.connect(host="localhost",
-                                 user='mnist',
-                                 password='1234',
-                                 port=53306,
-                                 database='mnistdb',
-                                 cursorclass=pymysql.cursors.DictCursor)
+    connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
             sql = "SELECT * FROM image_processing"
