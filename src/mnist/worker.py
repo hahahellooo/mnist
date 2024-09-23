@@ -51,7 +51,7 @@ def run():
 def send_noti(prediction_result=999):
     # STEP 3
     # LINE 으로 처리 결과 전송
-    KEY = os.getenv("LINE_TOKEN","UuAPZM7msPnFaJt5wXTUx34JqYKO7n3AUlLq4b3eyZ4")
+    KEY = os.getenv("LINE_TOKEN")
     url = "https://notify-api.line.me/api/notify"
     data = {"message":f"👌모델 {prediction_result}을/를 성공적으로 저장했습니다👌"}
     # API 호출시 사용되는 헤더 정보
