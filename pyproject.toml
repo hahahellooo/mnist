@@ -1,6 +1,6 @@
 [project]
 name = "mnist"
-version = "0.4.3"
+version = "0.4.4"
 description = "mnist"
 authors = [
     {name = "hahahellooo", email = "hahahello777@gmail.com"},
@@ -30,4 +30,3 @@ pythonpath = "src"
 
 [project.scripts]
 ml-worker = 'mnist.worker:run'
-ml-noti = 'mnist.worker:send_noti'
