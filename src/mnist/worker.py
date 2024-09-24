@@ -27,7 +27,7 @@ def run():
 
         num = result['num']
         prediction_result = random.randint(0,9)
-        prediction_model = 'RandomModel'
+        prediction_model = 'n21'
         prediction_time = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
         
         connection = get_connection()
