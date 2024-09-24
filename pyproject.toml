@@ -1,6 +1,6 @@
 [project]
 name = "mnist"
-version = "0.2.0"
+version = "0.5.0"
 description = "mnist"
 authors = [
     {name = "hahahellooo", email = "hahahello777@gmail.com"},
@@ -8,6 +8,10 @@ authors = [
 dependencies = [
     "fastapi>=0.115.0",
     "uvicorn[standard]>=0.30.6",
+    "python-multipart>=0.0.9",
+    "PyMySql>=1.1.1",
+    "pytz>=2024.2",
+    "requests>=2.32.3",
 ]
 requires-python = ">=3.11"
 readme = "README.md"
@@ -20,3 +24,9 @@ build-backend = "pdm.backend"
 
 [tool.pdm]
 distribution = true
+
+[tool.pytest.ini_options]
+pythonpath = "src"
+
+[project.scripts]
+ml-worker = 'mnist.worker:run'

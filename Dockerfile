@@ -1,0 +1,16 @@
+FROM python:3.11
+
+WORKDIR /code
+
+# cron관련 코드
+RUN apt update
+RUN apt install -y cron
+COPY ml-work-cronjob /etc/cron.d/ml-work-cronjob
+RUN crontab /etc/cron.d/ml-work-cronjob
+
+COPY src/mnist/main.py /code/
+COPY run.sh /code/run.sh
+
+RUN pip install --no-cache-dir --upgrade git+https://github.com/hahahellooo/mnist.git@0.4/hw
+
+CMD ["sh", "run.sh"]
