@@ -22,7 +22,7 @@ async def create_upload_file(file: UploadFile):
     file_name = file.filename
     file_ext = file.content_type.split("/")[-1] #"image/png"
     
-    upload_dir = '/home/hahahellooo/code/mnist/img'
+    upload_dir = os.getenv("UPLOAD_DIR",'/home/hahahellooo/code/mnist/img')
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir, exist_ok=True)
     import uuid
