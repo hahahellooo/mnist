@@ -12,7 +12,7 @@ def run():
     connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
-            sql = "SELECT num, file_label, file_path, prediction_result FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
+            sql = "SELECT num, label, file_path, prediction_result FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
             cursor.execute(sql)
             result = cursor.fetchone()
 
@@ -27,7 +27,7 @@ def run():
 
         num = result['num']
         file_path = result['file_path']
-        file_label = result['file_label']
+        file_label = result['label']
         from mnist.predict import  predict_digit
         prediction_result = predict_digit(file_path)
         prediction_model = 'n21'
