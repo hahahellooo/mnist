@@ -12,7 +12,7 @@ def run():
     connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
-            sql = "SELECT num, file_path, prediction_result FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
+            sql = "SELECT num, file_label, file_path, prediction_result FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
             cursor.execute(sql)
             result = cursor.fetchone()
 
@@ -27,7 +27,8 @@ def run():
 
         num = result['num']
         file_path = result['file_path']
-        from mnist.predict import get_image, preprocess_image, predict_digit
+        file_label = result['file_label']
+        from mnist.predict import  predict_digit
         prediction_result = predict_digit(file_path)
         prediction_model = 'n21'
         prediction_time = datetime.now(timezone('Asia/Seoul')).strftime('%Y-%m-%d %H:%M:%S')
@@ -39,8 +40,9 @@ def run():
                          SET prediction_result=%s, 
                              prediction_model=%s, 
                              prediction_time=%s
+                             file_label=%s
                          WHERE num = %s"""
-                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, num))
+                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, file_label, num))
                 connection.commit()
     
     # STEP 3

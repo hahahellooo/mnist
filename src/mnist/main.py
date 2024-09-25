@@ -21,7 +21,7 @@ async def create_upload_file(file: UploadFile):
     img = await file.read()
     file_name = file.filename
     file_ext = file.content_type.split("/")[-1] #"image/png"
-    
+    file_label = file_name.split('.')[0][0]
     upload_dir = os.getenv("UPLOAD_DIR",'/home/hahahellooo/code/mnist/img')
     if not os.path.exists(upload_dir):
         os.makedirs(upload_dir, exist_ok=True)
@@ -34,8 +34,8 @@ async def create_upload_file(file: UploadFile):
     connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
-            sql = "INSERT INTO `image_processing`(file_name, file_path, request_time, request_user) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql,(file_name, file_full_path, current_time, 'n21'))
+            sql = "INSERT INTO `image_processing`(file_name, label, file_path, request_time, request_user) VALUES (%s, %s, %s, %s, %s)"
+            cursor.execute(sql,(file_name, file_label, file_full_path, current_time, 'n21'))
             result = cursor.fetchone()
         connection.commit()
     
@@ -47,6 +47,7 @@ async def create_upload_file(file: UploadFile):
 
     return {
             "filename": file.filename,
+            "filelabel": file_label,
             "content_type":file.content_type,
             "file_full_path":file_full_path            
             }
