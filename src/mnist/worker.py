@@ -27,7 +27,7 @@ def run():
 
         num = result['num']
         file_path = result['file_path']
-        file_label = result['label']
+        label = result['label']
         from mnist.predict import  predict_digit
         prediction_result = predict_digit(file_path)
         prediction_model = 'n21'
@@ -40,9 +40,9 @@ def run():
                          SET prediction_result=%s, 
                              prediction_model=%s, 
                              prediction_time=%s
-                             file_label=%s
+                             label=%s
                          WHERE num = %s"""
-                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, file_label, num))
+                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, label, num))
                 connection.commit()
     
     # STEP 3
