@@ -17,8 +17,8 @@ def preprocess_image(image_path):
     img = img.resize((28, 28))  # 크기 조정
 
     # 흑백 반전
-    # img = 255 - np.array(img)  # 흑백 반전
-    img = np.array(img)
+    img = 255 - np.array(img)  # 흑백 반전
+    #img = np.array(img)
 
     img = img.reshape(1, 28, 28, 1)  # 모델 입력 형태에 맞게 변형
     img = img / 255.0  # 정규화
