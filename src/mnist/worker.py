@@ -12,7 +12,7 @@ def run():
     connection = get_connection()
     with connection:
         with connection.cursor() as cursor:
-            sql = "SELECT num, label, file_path, prediction_result FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
+            sql = "SELECT num, label, file_path FROM image_processing WHERE prediction_result IS NULL LIMIT 1"
             cursor.execute(sql)
             result = cursor.fetchone()
 
@@ -40,9 +40,8 @@ def run():
                          SET prediction_result=%s, 
                              prediction_model=%s, 
                              prediction_time=%s
-                             label=%s
                          WHERE num = %s"""
-                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, label, num))
+                cursor.execute(sql,(prediction_result, prediction_model, prediction_time, num))
                 connection.commit()
     
     # STEP 3
